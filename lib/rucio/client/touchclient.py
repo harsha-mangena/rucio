@@ -77,6 +77,6 @@ class TouchClient(BaseClient):
         url = '%s/%s/' % (choice(self.list_hosts), self.TRACES_BASEURL)
 
         try:
-            post(url, verify=False, data=dumps(trace))
+            post(url, verify=True, data=dumps(trace))
         except Exception as error:
             raise RucioException("Could not send trace. " + str(error))
