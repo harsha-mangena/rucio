@@ -20,7 +20,6 @@ profile", which must be specified for each RSE upon triggering decommissioning.
 """
 
 import logging
-import random
 import socket
 import threading
 from collections.abc import Callable
@@ -39,6 +38,7 @@ from rucio.db.sqla.constants import RuleState
 from .config import DecommissioningStatus, InvalidStatusName, attr_to_config, set_status
 from .profiles import PROFILE_MAP
 from .profiles.types import DecommissioningProfile, HandlerOutcome
+import secrets
 
 if TYPE_CHECKING:
     from rucio.daemons.common import HeartbeatHandler
@@ -91,7 +91,7 @@ def run_once(
 
     # Collect all RSEs with the 'decommission' attribute
     rses = get_rses_with_attribute(RseAttr.DECOMMISSION)
-    random.shuffle(rses)
+    secrets.SystemRandom().shuffle(rses)
 
     for rse in rses:
         # Get the decommission attribute (encodes the decommissioning config)

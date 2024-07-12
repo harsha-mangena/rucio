@@ -22,7 +22,6 @@ import time
 import traceback
 from copy import deepcopy
 from datetime import datetime, timedelta
-from random import randint
 from re import match
 from typing import TYPE_CHECKING
 
@@ -36,6 +35,7 @@ from rucio.core.monitor import MetricManager
 from rucio.core.rule import get_stuck_rules, repair_rule
 from rucio.daemons.common import run_daemon
 from rucio.db.sqla.constants import ORACLE_CONNECTION_LOST_CONTACT_REGEX, ORACLE_RESOURCE_BUSY_REGEX
+import secrets
 
 if TYPE_CHECKING:
     from types import FrameType
@@ -100,7 +100,7 @@ def run_once(paused_rules, delta, heartbeat_handler, **_kwargs):
             logger(logging.DEBUG, 'repairing of %s took %f' % (rule_id, time.time() - start))
         except (DatabaseException, DatabaseError) as e:
             if match(ORACLE_RESOURCE_BUSY_REGEX, str(e.args[0])):
-                paused_rules[rule_id] = datetime.utcnow() + timedelta(seconds=randint(600, 2400))  # noqa: S311
+                paused_rules[rule_id] = datetime.utcnow() + timedelta(seconds=secrets.SystemRandom().randint(600, 2400))  # noqa: S311
                 logger(logging.WARNING, 'Locks detected for %s' % (rule_id))
                 METRICS.counter('exceptions.{exception}').labels(exception='LocksDetected').inc()
             elif match('.*QueuePool.*', str(e.args[0])):

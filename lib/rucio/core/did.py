@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import logging
-import random
 from datetime import datetime, timedelta
 from enum import Enum
 from hashlib import md5
@@ -38,6 +37,7 @@ from rucio.db.sqla import filter_thread_work, models
 from rucio.db.sqla.constants import BadFilesStatus, DIDAvailability, DIDReEvaluation, DIDType, RuleState
 from rucio.db.sqla.session import read_session, stream_session, transactional_session
 from rucio.db.sqla.util import temp_table_mngr
+import secrets
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator, Mapping, Sequence
@@ -2805,7 +2805,7 @@ def create_did_sample(
     :param session: The database session in use.
     """
     files = [did for did in list_files(scope=input_scope, name=input_name, long=False, session=session)]
-    random.shuffle(files)
+    secrets.SystemRandom().shuffle(files)
     output_files = files[:int(nbfiles)]
     add_did(scope=output_scope, name=output_name, did_type=DIDType.DATASET, account=account, statuses={}, meta=[], rules=[], lifetime=None, dids=output_files, rse_id=None, session=session)
 

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import random
 import shutil
 import socket
 import tarfile
@@ -33,6 +32,7 @@ from rucio.common.cache import make_region_memcached
 from rucio.common.config import config_get, config_get_bool, config_get_int
 from rucio.common.exception import InvalidRSEExpression
 from rucio.core.rse_expression_parser import parse_expression
+import secrets
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -299,7 +299,7 @@ def sort_random(dictreplica: dict) -> list:
     """
 
     list_replicas = list(dictreplica.keys())
-    random.shuffle(list_replicas)
+    secrets.SystemRandom().shuffle(list_replicas)
     return list_replicas
 
 

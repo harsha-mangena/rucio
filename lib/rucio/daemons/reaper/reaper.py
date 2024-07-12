@@ -18,7 +18,6 @@ Reaper is a daemon to manage file deletion.
 
 import functools
 import logging
-import random
 import threading
 import time
 import traceback
@@ -50,6 +49,7 @@ from rucio.core.rule import get_evaluation_backlog
 from rucio.core.vo import list_vos
 from rucio.daemons.common import run_daemon
 from rucio.rse import rsemanager as rsemgr
+import secrets
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -509,7 +509,7 @@ def _run_once(rses_to_process, chunk_size, greedy, scheme,
                             for rse, needed_free_space, only_delete_obsolete, enable_greedy in sorted_rses)
     logger(logging.DEBUG, 'List of RSEs to process ordered by needed space desc: %s', log_msg_str)
 
-    random.shuffle(rses_with_params)
+    secrets.SystemRandom().shuffle(rses_with_params)
 
     work_remaining_by_rse = {}
     paused_rses = []

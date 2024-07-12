@@ -21,7 +21,6 @@ import datetime
 import functools
 import json
 import logging
-import random
 import re
 import smtplib
 import socket
@@ -48,6 +47,7 @@ from rucio.common.logging import setup_logging
 from rucio.core.message import delete_messages, retrieve_messages
 from rucio.core.monitor import MetricManager
 from rucio.daemons.common import run_daemon
+import secrets
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -211,7 +211,7 @@ def deliver_to_activemq(
     to_delete = []
     for message in messages:
         try:
-            conn = random.sample(conns, 1)[0]
+            conn = secrets.SystemRandom().sample(conns, 1)[0]
             if not conn.is_connected():
                 host_and_ports = conn.transport._Transport__host_and_ports[0][0]
                 RECONNECT_COUNTER.labels(host=host_and_ports.split(".")[0]).inc()

@@ -14,7 +14,6 @@
 
 import copy
 import logging
-import random
 from collections.abc import Callable
 from time import sleep
 from urllib.parse import urlparse
@@ -24,6 +23,7 @@ from rucio.common.config import config_get_int
 from rucio.common.constraints import STRING_TYPES
 from rucio.common.logging import formatted_logger
 from rucio.common.utils import GLOBALLY_SUPPORTED_CHECKSUMS, make_valid_did
+import secrets
 
 
 def get_scope_protocol(vo: str = 'def') -> Callable:
@@ -149,7 +149,7 @@ def select_protocol(rse_settings: types.RSESettingsDict, operation, scheme=None,
 
     candidates = _get_possible_protocols(rse_settings, operation, scheme, domain)
     # Shuffle candidates to load-balance over equal sources
-    random.shuffle(candidates)
+    secrets.SystemRandom().shuffle(candidates)
     return min(candidates, key=lambda k: k['domains'][domain][operation])
 
 
@@ -708,8 +708,8 @@ def find_matching_scheme(rse_settings_dest, rse_settings_src, operation_src, ope
         raise exception.RSEProtocolNotSupported('No protocol for provided settings found : %s.' % str(rse_settings_dest))
 
     # Shuffle the candidates to load-balance across equal weights.
-    random.shuffle(dest_candidates)
-    random.shuffle(src_candidates)
+    secrets.SystemRandom().shuffle(dest_candidates)
+    secrets.SystemRandom().shuffle(src_candidates)
 
     # Select the one with the highest priority
     dest_candidates = sorted(dest_candidates, key=lambda k: k['domains'][domain][operation_dest])

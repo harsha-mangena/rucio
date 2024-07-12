@@ -14,7 +14,6 @@
 
 import functools
 import logging
-import random
 import secrets
 import tempfile
 import threading
@@ -63,7 +62,7 @@ def get_data_distribution(inputfile: str):
 
 
 def choose_element(probabilities: dict, data: str) -> float:
-    rnd = random.uniform(0, 1)  # noqa: S311
+    rnd = secrets.SystemRandom().uniform(0, 1)  # noqa: S311
     prob = 0
     for key in probabilities:
         prob = probabilities[key]
