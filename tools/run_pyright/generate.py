@@ -20,6 +20,7 @@ from pathlib import Path
 
 from .models import Report, ReportDict
 from .utils import save_json
+from security import safe_command
 
 PATHS = (
     'lib/',
@@ -56,7 +57,7 @@ def _run_pyright() -> ReportDict:
     """Runs the pyright type-checker and returns its output as json."""
     cmdline = ['pyright', '--outputjson', *PATHS]
     try:
-        process = subprocess.run(cmdline, stdout=subprocess.PIPE)
+        process = safe_command.run(subprocess.run, cmdline, stdout=subprocess.PIPE)
         return json.loads(process.stdout)
     except FileNotFoundError as ex:
         print('Error running pyright.'

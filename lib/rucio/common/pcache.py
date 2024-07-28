@@ -26,6 +26,7 @@ from socket import gethostname
 from typing import TYPE_CHECKING, Any, Optional
 from urllib.parse import urlencode
 from urllib.request import urlopen
+from security import safe_command
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
@@ -59,7 +60,7 @@ def run_cmd(args: "subprocess._CMD", timeout: int = 0) -> tuple[int, Optional[by
 
     # Execute the command as a subprocess
     try:
-        p = subprocess.Popen(args=args,
+        p = safe_command.run(subprocess.Popen, args=args,
                              shell=False,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT)
@@ -107,7 +108,7 @@ def run_cmd(args: "subprocess._CMD", timeout: int = 0) -> tuple[int, Optional[by
 def get_process_children(pid: int) -> list[int]:
 
     # Get a list of all pids associated with a given pid
-    p = subprocess.Popen(args='ps --no-headers -o pid --ppid %d' % pid,
+    p = safe_command.run(subprocess.Popen, args='ps --no-headers -o pid --ppid %d' % pid,
                          shell=True,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)

@@ -30,6 +30,7 @@ from tempfile import NamedTemporaryFile
 from typing import NoReturn, Optional, Union
 
 import yaml
+from security import safe_command
 
 
 def run(*args, check=True, return_stdout=False, env=None) -> Union[NoReturn, io.TextIOBase]:
@@ -41,7 +42,7 @@ def run(*args, check=True, return_stdout=False, env=None) -> Union[NoReturn, io.
         kwargs['stdout'] = subprocess.PIPE
     args = [str(a) for a in args]
     print("** Running", " ".join(map(lambda a: repr(a) if ' ' in a else a, args)), kwargs, file=sys.stderr, flush=True)
-    proc = subprocess.run(args, **kwargs)
+    proc = safe_command.run(subprocess.run, args, **kwargs)
     if return_stdout:
         return proc.stdout
 

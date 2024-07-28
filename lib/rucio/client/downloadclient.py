@@ -35,6 +35,7 @@ from rucio.common.exception import InputValidationError, NoFilesDownloaded, NotA
 from rucio.common.pcache import Pcache
 from rucio.common.utils import CHECKSUM_ALGO_DICT, GLOBALLY_SUPPORTED_CHECKSUMS, PREFERRED_CHECKSUM, adler32, detect_client_location, execute, extract_scope, generate_uuid, parse_replicas_from_file, parse_replicas_from_string, send_trace, sizefmt
 from rucio.rse import rsemanager as rsemgr
+from security import safe_command
 
 
 @enum.unique
@@ -871,8 +872,7 @@ class DownloadClient:
             try:
                 to_exec = cmd % (os.getpid(), rpc_secret, port)
                 logger(logging.DEBUG, to_exec)
-                rpcproc = subprocess.Popen(
-                    cmd,
+                rpcproc = safe_command.run(subprocess.Popen, cmd,
                     shell=True,
                     stdin=subprocess.PIPE,
                     stdout=subprocess.PIPE,

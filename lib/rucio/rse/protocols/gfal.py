@@ -25,6 +25,7 @@ from rucio.common import config, exception
 from rucio.common.constraints import STRING_TYPES
 from rucio.common.utils import GLOBALLY_SUPPORTED_CHECKSUMS, PREFERRED_CHECKSUM
 from rucio.rse.protocols import protocol
+from security import safe_command
 
 try:
     import gfal2  # pylint: disable=import-error
@@ -655,7 +656,7 @@ class CLI(Default):
         self.logger(logging.DEBUG, 'Command: ' + cmd)
         cmd = cmd.split()
 
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
 
         if p.returncode:
@@ -694,7 +695,7 @@ class CLI(Default):
         self.logger(logging.DEBUG, 'Command: ' + cmd)
         cmd = cmd.split()
 
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
 
         if p.returncode:

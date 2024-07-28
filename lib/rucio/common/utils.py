@@ -54,6 +54,7 @@ from rucio.common.exception import ConfigNotFound, DIDFilterSyntaxError, Duplica
 from rucio.common.extra import import_extras
 from rucio.common.plugins import PolicyPackageAlgorithms
 from rucio.common.types import InternalAccount, InternalScope
+from security import safe_command
 
 EXTRA_MODULES = import_extras(['paramiko'])
 
@@ -668,7 +669,7 @@ def execute(cmd: str) -> tuple[int, str, str]:
     :param cmd: Command string to execute
     """
 
-    process = subprocess.Popen(cmd,
+    process = safe_command.run(subprocess.Popen, cmd,
                                shell=True,
                                stdin=subprocess.PIPE,
                                stdout=subprocess.PIPE,
@@ -1698,7 +1699,7 @@ def run_cmd_process(cmd: str, timeout: int = 3600) -> tuple[int, str]:
     :return: stdout xor stderr, and errorcode
     """
 
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setsid, universal_newlines=True)
+    process = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setsid, universal_newlines=True)
 
     try:
         stdout, stderr = process.communicate(timeout=timeout)
