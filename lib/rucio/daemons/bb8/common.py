@@ -193,7 +193,7 @@ def _list_rebalance_rule_candidates_dump(rse_id, mode=None, logger=logging.log):
     success = False
     while not success and len(rse_dump_urls):
         url = rse_dump_urls.pop()
-        resp = get(url, stream=True)
+        resp = get(url, stream=True, timeout=60)
         if resp:
             success = True
     if not resp or resp is None:
