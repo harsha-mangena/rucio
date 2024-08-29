@@ -20,10 +20,9 @@ import logging
 from json import loads
 from time import time
 
-from requests import get
-
 from rucio.common.config import config_get, config_get_int
 from rucio.daemons.c3po.utils.timeseries import RedisTimeSeries
+from security import safe_requests
 
 
 class WorkloadCollector:
@@ -62,7 +61,7 @@ class WorkloadCollector:
 
         def collect_workload(self):
             start = time()
-            resp = get(self._request_url, headers=self._request_headers)
+            resp = safe_requests.get(self._request_url, headers=self._request_headers)
             logging.debug("PanDA response took %fs" % (time() - start))
 
             start = time()

@@ -56,6 +56,7 @@ from rucio.db.sqla.constants import OBSOLETE, BadFilesStatus, BadPFNStatus, DIDA
 from rucio.db.sqla.session import BASE, DEFAULT_SCHEMA_NAME, read_session, stream_session, transactional_session
 from rucio.db.sqla.util import temp_table_mngr
 from rucio.rse import rsemanager as rsemgr
+from security import safe_requests
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator, Sequence
@@ -695,7 +696,7 @@ def get_multi_cache_prefix(cache_site, filename, logger=logging.log):
     x_caches = REGION.get('CacheSites')
     if x_caches is NO_VALUE:
         try:
-            response = requests.get('{}/serverRanges'.format(vp_endpoint), timeout=1, verify=False)
+            response = safe_requests.get('{}/serverRanges'.format(vp_endpoint), timeout=1, verify=False)
             if response.ok:
                 x_caches = response.json()
                 REGION.set('CacheSites', x_caches)
@@ -2957,7 +2958,7 @@ def list_dataset_replicas_vp(scope, name, deep=False, *, session: "Session", log
         return vp_replies
 
     try:
-        vp_replies = requests.get('{}/ds/{}/{}:{}'.format(vp_endpoint, nr_replies, scope, name),
+        vp_replies = safe_requests.get('{}/ds/{}/{}:{}'.format(vp_endpoint, nr_replies, scope, name),
                                   verify=False,
                                   timeout=1)
         if vp_replies.status_code == 200:
