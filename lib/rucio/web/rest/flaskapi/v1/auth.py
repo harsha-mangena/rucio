@@ -1511,7 +1511,7 @@ class SAML(ErrorHandlingMethodView):
         if not errors:
             if auth.is_authenticated():
                 response = Response()
-                response.set_cookie('saml-nameid', value=auth.get_nameid(), path='/')
+                response.set_cookie('saml-nameid', value=auth.get_nameid(), path='/', secure=True, httponly=True, samesite='Lax')
                 return response
         return '', 200
 
