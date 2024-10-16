@@ -22,7 +22,6 @@ import threading
 import traceback
 from copy import deepcopy
 from datetime import datetime, timedelta
-from random import randint
 from re import match
 from typing import TYPE_CHECKING
 
@@ -37,6 +36,7 @@ from rucio.core.did import delete_dids, list_expired_dids
 from rucio.core.monitor import MetricManager
 from rucio.daemons.common import HeartbeatHandler, run_daemon
 from rucio.db.sqla.constants import MYSQL_LOCK_NOWAIT_REGEX, ORACLE_RESOURCE_BUSY_REGEX, PSQL_LOCK_NOT_AVAILABLE_REGEX
+import secrets
 
 if TYPE_CHECKING:
     from types import FrameType
@@ -98,7 +98,7 @@ def run_once(paused_dids: dict[tuple, datetime], chunk_size: int, heartbeat_hand
             except (DatabaseException, DatabaseError, UnsupportedOperation) as e:
                 if match(ORACLE_RESOURCE_BUSY_REGEX, str(e.args[0])) or match(PSQL_LOCK_NOT_AVAILABLE_REGEX, str(e.args[0])) or match(MYSQL_LOCK_NOWAIT_REGEX, str(e.args[0])):
                     for did in chunk:
-                        paused_dids[(did['scope'], did['name'])] = datetime.utcnow() + timedelta(seconds=randint(600, 2400))  # noqa: S311
+                        paused_dids[(did['scope'], did['name'])] = datetime.utcnow() + timedelta(seconds=secrets.SystemRandom().randint(600, 2400))  # noqa: S311
                     METRICS.counter('delete_dids.exceptions.{exception}').labels(exception='LocksDetected').inc()
                     logger(logging.WARNING, 'Locks detected for chunk')
                 else:

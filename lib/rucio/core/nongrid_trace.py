@@ -14,7 +14,6 @@
 
 import json
 import logging.handlers
-import random
 import socket
 
 import stomp
@@ -22,6 +21,7 @@ import stomp
 from rucio.common.config import config_get, config_get_int
 from rucio.common.logging import rucio_log_formatter
 from rucio.core.monitor import MetricManager
+import secrets
 
 METRICS = MetricManager(module=__name__)
 
@@ -100,7 +100,7 @@ def trace(payload):
     try:
         for i in range(len(t_conns)):
             try:
-                conn = random.sample(t_conns, 1)[0]
+                conn = secrets.SystemRandom().sample(t_conns, 1)[0]
                 if not conn.is_connected():
                     LOGGER.info('reconnect to ' + conn.transport._Transport__host_and_ports[0][0])
                     conn.connect(USERNAME, PASSWORD)

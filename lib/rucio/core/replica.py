@@ -16,7 +16,6 @@ import copy
 import heapq
 import logging
 import math
-import random
 from collections import defaultdict, namedtuple
 from curses.ascii import isprint
 from datetime import datetime, timedelta
@@ -56,6 +55,7 @@ from rucio.db.sqla.constants import OBSOLETE, BadFilesStatus, BadPFNStatus, DIDA
 from rucio.db.sqla.session import BASE, DEFAULT_SCHEMA_NAME, read_session, stream_session, transactional_session
 from rucio.db.sqla.util import temp_table_mngr
 from rucio.rse import rsemanager as rsemgr
+import secrets
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator, Sequence
@@ -643,7 +643,7 @@ def _pick_n_random(nrandom, generator):
             element = next(iterator)
             i += 1
 
-            index_to_substitute = random.randint(0, i)  # noqa: S311
+            index_to_substitute = secrets.SystemRandom().randint(0, i)  # noqa: S311
             if index_to_substitute < nrandom:
                 selected[index_to_substitute] = element
     except StopIteration:

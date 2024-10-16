@@ -17,7 +17,6 @@ import itertools
 import json
 import logging
 import math
-import random
 import threading
 import traceback
 import uuid
@@ -47,6 +46,7 @@ from rucio.db.sqla import filter_thread_work, models
 from rucio.db.sqla.constants import LockState, ReplicaState, RequestErrMsg, RequestState, RequestType, TransferLimitDirection
 from rucio.db.sqla.session import read_session, stream_session, transactional_session
 from rucio.db.sqla.util import temp_table_mngr
+import secrets
 
 RequestAndState = namedtuple('RequestAndState', ['request_id', 'request_state'])
 
@@ -1409,7 +1409,7 @@ class TransferStatsManager:
         downsample_period = config_get_int('transfers', 'stats_downsample_period', default=self.downsample_period)
         # Introduce some voluntary jitter to reduce the likely-hood of performing this database
         # operation multiple times in parallel.
-        self.downsample_period = random.randint(downsample_period * 3 // 4, math.ceil(downsample_period * 5 / 4))  # noqa: S311
+        self.downsample_period = secrets.SystemRandom().randint(downsample_period * 3 // 4, math.ceil(downsample_period * 5 / 4))  # noqa: S311
         if self.record_stats:
             self.save_timer = threading.Timer(self.raw_resolution.total_seconds(), self.periodic_save)
             self.save_timer.start()

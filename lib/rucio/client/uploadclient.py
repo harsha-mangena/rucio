@@ -18,7 +18,6 @@ import json
 import logging
 import os
 import os.path
-import random
 import socket
 import time
 
@@ -43,6 +42,7 @@ from rucio.common.exception import (
 )
 from rucio.common.utils import GLOBALLY_SUPPORTED_CHECKSUMS, adler32, bittorrent_v2_merkle_sha256, detect_client_location, execute, generate_uuid, make_valid_did, md5, retry, send_trace
 from rucio.rse import rsemanager as rsemgr
+import secrets
 
 
 class UploadClient:
@@ -112,7 +112,7 @@ class UploadClient:
         # helper to get rse from rse_expression:
         def _pick_random_rse(rse_expression):
             rses = [r['rse'] for r in self.client.list_rses(rse_expression)]  # can raise InvalidRSEExpression
-            random.shuffle(rses)
+            secrets.SystemRandom().shuffle(rses)
             return rses[0]
 
         logger = self.logger
