@@ -1343,7 +1343,7 @@ def send_trace(trace: dict[str, Any], trace_endpoint: str, user_agent: str, retr
         return 0
     for dummy in range(retries):
         try:
-            requests.post(trace_endpoint + '/traces/', verify=False, data=json.dumps(trace))
+            requests.post(trace_endpoint + '/traces/', verify=False, data=json.dumps(trace), timeout=60)
             return 0
         except Exception:
             pass

@@ -39,7 +39,7 @@ class MappingCollector:
             '''
             _fetch_panda_mapping
             '''
-            result = get(config_get('c3po-site-mapper', 'panda_url'))
+            result = get(config_get('c3po-site-mapper', 'panda_url'), timeout=60)
             data = loads(result.text)
             self.panda_to_site = {}
             self.site_to_panda = {}
@@ -54,7 +54,7 @@ class MappingCollector:
             '''
             _fetch_ddm_mapping
             '''
-            result = get(config_get('c3po-site-mapper', 'ddm_url'))
+            result = get(config_get('c3po-site-mapper', 'ddm_url'), timeout=60)
             data = loads(result.text)
             self.site_to_ddm = {}
             self.ddm_to_site = {}
