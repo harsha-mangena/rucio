@@ -18,6 +18,7 @@ import subprocess
 import sys
 
 import requests
+from security import safe_requests
 
 if __name__ == "__main__":
     requests.packages.urllib3.disable_warnings()
@@ -53,7 +54,7 @@ def format_issue(issue, doc=False):
 
 
 def load_milestones(github_token, page=1):
-    r = requests.get(url='https://api.github.com/repos/rucio/rucio/milestones',
+    r = safe_requests.get(url='https://api.github.com/repos/rucio/rucio/milestones',
                      headers={'Authorization': 'token %s' % github_token},
                      params={'state': 'all', 'page': page, 'per_page': '100'})
     return json.loads(r.text)
@@ -144,7 +145,7 @@ for milestone in milestones:
 
 # Get the issues
 issues = []
-r = requests.get(url='https://api.github.com/repos/rucio/rucio/issues',
+r = safe_requests.get(url='https://api.github.com/repos/rucio/rucio/issues',
                  headers={'Authorization': 'token %s' % github_token},
                  params={'milestone': milestone_number, 'state': 'closed', 'per_page': 100})
 for issue in json.loads(r.text):
@@ -155,12 +156,12 @@ for issue in json.loads(r.text):
                    'title': issue['title']})
 # If --backport is specified, we additionally need to scan older issues
 if option_backport:
-    r = requests.get(url='https://api.github.com/repos/rucio/rucio/issues',
+    r = safe_requests.get(url='https://api.github.com/repos/rucio/rucio/issues',
                      headers={'Authorization': 'token %s' % github_token},
                      params={'labels': 'backport', 'state': 'closed', 'per_page': 100})
     for issue in json.loads(r.text):
         # Load the comments
-        r = requests.get(url=issue['comments_url'],
+        r = safe_requests.get(url=issue['comments_url'],
                          headers={'Authorization': 'token %s' % github_token},
                          params={'per_page': 100})
         # Iterate comments
