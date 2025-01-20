@@ -21,7 +21,6 @@ from collections import namedtuple
 from collections.abc import Callable, Iterable
 from functools import wraps
 from os import rename
-from random import choice, choices
 from string import ascii_letters, ascii_uppercase, digits
 from typing import Any, Optional
 
@@ -31,6 +30,7 @@ import requests
 from rucio.common.config import config_get, config_get_bool, get_config_dirs
 from rucio.common.utils import execute
 from rucio.common.utils import generate_uuid as uuid
+import secrets
 
 skip_rse_tests_with_accounts = pytest.mark.skipif(not any(os.path.exists(os.path.join(d, 'rse-accounts.cfg')) for d in get_config_dirs()),
                                                   reason='fails if no rse-accounts.cfg found')
@@ -129,7 +129,7 @@ def rse_name_generator(size: int = 10) -> str:
 
     :returns: A random RSE name
     """
-    return 'MOCK-' + ''.join(choice(ascii_uppercase) for x in range(size))  # noqa: S311
+    return 'MOCK-' + ''.join(secrets.choice(ascii_uppercase) for x in range(size))  # noqa: S311
 
 
 def rfc2253_dn_generator() -> str:
@@ -137,9 +137,9 @@ def rfc2253_dn_generator() -> str:
 
     :returns: A random DN
     """
-    random_cn = ''.join(choices(ascii_letters + digits, k=8))  # noqa: S311
-    random_o = ''.join(choices(ascii_letters + digits, k=8))  # noqa: S311
-    random_c = ''.join(choices(ascii_letters, k=2))  # noqa: S311
+    random_cn = ''.join(secrets.SystemRandom().choices(ascii_letters + digits, k=8))  # noqa: S311
+    random_o = ''.join(secrets.SystemRandom().choices(ascii_letters + digits, k=8))  # noqa: S311
+    random_c = ''.join(secrets.SystemRandom().choices(ascii_letters, k=2))  # noqa: S311
     random_dn = "CN={}, O={}, C={}".format(random_cn, random_o, random_c)
     return random_dn
 
@@ -149,7 +149,7 @@ def file_generator(size: int = 2, namelen: int = 10) -> str:
     :param size: size in bytes
     :returns: The name of the generated file.
     """
-    fn = '/tmp/file_' + ''.join(choice(ascii_uppercase) for x in range(namelen))  # noqa: S311
+    fn = '/tmp/file_' + ''.join(secrets.choice(ascii_uppercase) for x in range(namelen))  # noqa: S311
     execute('dd if=/dev/urandom of={0} count={1} bs=1'.format(fn, size))
     return fn
 

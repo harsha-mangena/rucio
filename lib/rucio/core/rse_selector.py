@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from collections.abc import Iterable, Sequence
-from random import shuffle, uniform
 from typing import TYPE_CHECKING, Optional
 
 from rucio.common.exception import InsufficientAccountLimit, InsufficientTargetRSEs, InvalidRuleWeight, RSEOverQuota
@@ -24,6 +23,7 @@ from rucio.core.rse import get_rse_limits, has_rse_attribute, list_rse_attribute
 from rucio.core.rse_counter import get_counter as get_rse_counter
 from rucio.core.rse_expression_parser import parse_expression
 from rucio.db.sqla.session import read_session
+import secrets
 
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
@@ -246,8 +246,8 @@ class RSESelector:
         :return:      The (rse_id, staging_area) tuple of the chosen RSE.
         """
 
-        shuffle(rses)
-        pick = uniform(0, sum([rse['weight'] for rse in rses]))  # noqa: S311
+        secrets.SystemRandom().shuffle(rses)
+        pick = secrets.SystemRandom().uniform(0, sum([rse['weight'] for rse in rses]))  # noqa: S311
         weight = 0
         for rse in rses:
             weight += rse['weight']

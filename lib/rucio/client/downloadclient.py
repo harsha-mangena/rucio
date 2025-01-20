@@ -17,7 +17,6 @@ import enum
 import itertools
 import logging
 import os
-import random
 import secrets
 import shutil
 import signal
@@ -866,7 +865,7 @@ class DownloadClient:
 
         # trying up to 3 random ports
         for attempt in range(3):
-            port = random.randint(1024, 65534)  # noqa: S311
+            port = secrets.SystemRandom().randint(1024, 65534)  # noqa: S311
             logger(logging.DEBUG, 'Trying to start rpc server on port: %d' % port)
             try:
                 to_exec = cmd % (os.getpid(), rpc_secret, port)

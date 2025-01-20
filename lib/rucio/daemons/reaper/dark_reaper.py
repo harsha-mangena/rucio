@@ -18,7 +18,6 @@ Dark Reaper is a daemon to manage quarantined file deletion.
 
 import functools
 import logging
-import random
 import sys
 import threading
 import time
@@ -38,6 +37,7 @@ from rucio.core.rse_expression_parser import parse_expression
 from rucio.core.vo import list_vos
 from rucio.daemons.common import run_daemon
 from rucio.rse import rsemanager as rsemgr
+import secrets
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -97,7 +97,7 @@ def run_once(
 
     nothing_to_do = True
     rses_to_process = list(set(rses) & set(list_rses_with_quarantined_replicas()))
-    random.shuffle(rses_to_process)
+    secrets.SystemRandom().shuffle(rses_to_process)
     for rse_id in rses_to_process:
         worker_number, total_workers, logger = heartbeat_handler.live()
         # The following query returns the list of real replicas (deleted_replicas) and list of dark replicas (dark_replicas)

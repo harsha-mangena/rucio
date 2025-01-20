@@ -15,7 +15,6 @@
 import datetime
 import functools
 import logging
-import random
 import threading
 from sys import exc_info
 from traceback import format_exception
@@ -33,6 +32,7 @@ from rucio.core.rse_expression_parser import parse_expression
 from rucio.core.rule import get_rules_beyond_eol, update_rule
 from rucio.daemons.common import run_daemon
 from rucio.db.sqla.constants import LifetimeExceptionsState
+import secrets
 
 if TYPE_CHECKING:
     from types import FrameType
@@ -109,7 +109,7 @@ def run_once(
             lifetime_exceptions[key] = excep['expires_at']
     logger(logging.DEBUG, '%d active exceptions', len(lifetime_exceptions))
 
-    rand = random.Random(worker_number)   # noqa: S311
+    rand = secrets.SystemRandom().Random(worker_number)   # noqa: S311
 
     try:
         rules = get_rules_beyond_eol(date_check, worker_number, total_workers, session=None)
