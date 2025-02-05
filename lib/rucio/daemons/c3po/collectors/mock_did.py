@@ -31,7 +31,7 @@ class MockDIDCollector:
     def _read_file(self, infile):
         dids = []
         with open(infile, 'r') as f:
-            f.readline()
+            f.readline(5_000_000)
             for line in f:
                 items = line.strip().split('\t')
                 scope = items[0]

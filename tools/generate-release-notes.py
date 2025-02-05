@@ -126,7 +126,7 @@ root_git_dir = subprocess.check_output('git rev-parse --show-toplevel', shell=Tr
 # Load OAUTH token
 try:
     with open(root_git_dir + '/.githubtoken', 'r') as f:
-        github_token = f.readline().strip()
+        github_token = f.readline(5_000_000).strip()
 except:
     print('No github token file found at %s' % root_git_dir + '/.githubtoken')
     sys.exit(-1)
