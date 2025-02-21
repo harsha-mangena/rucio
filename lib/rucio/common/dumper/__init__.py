@@ -264,7 +264,7 @@ def http_download_to_file(url: str, file_: "IO", session: Optional[requests.Sess
     '''
     def _do_download(url, file_, session, try_decode=False):
         if session is None:
-            response = requests.get(url, stream=True)
+            response = requests.get(url, stream=True, timeout=60)
         else:
             response = session.get(url)
 

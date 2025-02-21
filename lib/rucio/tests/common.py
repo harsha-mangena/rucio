@@ -45,7 +45,7 @@ skip_non_belleii = pytest.mark.skipif(not ('POLICY' in os.environ and os.environ
 def is_influxdb_available() -> bool:
     """Return True if influxdb is available, else return False."""
     try:
-        response = requests.get('http://localhost:8086/ping')
+        response = requests.get('http://localhost:8086/ping', timeout=60)
         return response.status_code == 204
     except requests.exceptions.ConnectionError:
         print('InfluxDB is not running at localhost:8086')
@@ -55,7 +55,7 @@ def is_influxdb_available() -> bool:
 def is_elasticsearch_available() -> bool:
     """Return True if elasticsearch is available, else return False."""
     try:
-        response = requests.get('http://localhost:9200/')
+        response = requests.get('http://localhost:9200/', timeout=60)
         return response.status_code == 200
     except requests.exceptions.ConnectionError:
         print('Elasticsearch is not running at localhost:9200')
