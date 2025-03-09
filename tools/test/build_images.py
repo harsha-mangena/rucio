@@ -22,6 +22,7 @@ import pathlib
 import subprocess
 import sys
 from functools import partial
+from security import safe_command
 
 # mostly for checking the version in automated scripts, similar to sys.version_info
 VERSION: tuple[int] = (2, )
@@ -71,7 +72,7 @@ def build_images(matrix, script_args):
             elif script_args.cache_repo:
                 args = ('docker', 'pull', imagetag)
                 print("Running", " ".join(args), file=sys.stderr, flush=True)
-                subprocess.run(args, stdout=sys.stderr, check=False)
+                safe_command.run(subprocess.run, args, stdout=sys.stderr, check=False)
 
             # add image to output
             images[imagetag] = {DIST_KEY: dist, **buildargs._asdict()}
@@ -113,13 +114,13 @@ def build_images(matrix, script_args):
                 print("Error defining build arguments from", buildargs, file=sys.stderr, flush=True)
                 sys.exit(1)
             print("Running", " ".join(args), file=sys.stderr, flush=True)
-            subprocess.run(args, stdout=sys.stderr, check=True, env=env)
+            safe_command.run(subprocess.run, args, stdout=sys.stderr, check=True, env=env)
             print("Finished building image", imagetag, file=sys.stderr, flush=True)
 
             if script_args.push_cache:
                 args = ('docker', 'push', imagetag)
                 print("Running", " ".join(args), file=sys.stderr, flush=True)
-                subprocess.run(args, stdout=sys.stderr, check=True)
+                safe_command.run(subprocess.run, args, stdout=sys.stderr, check=True)
 
     return images
 
