@@ -24,13 +24,13 @@ import re
 from typing import Optional
 
 import gfal2
-import requests
 
 from rucio.common.config import get_config_dirs
 from rucio.common.constants import RseAttr
 from rucio.common.dumper import DUMPS_CACHE_DIR, HTTPDownloadFailed, ddmendpoint_url, gfal_download_to_file, http_download_to_file, temp_file
 from rucio.core.credential import get_signed_url
 from rucio.core.rse import get_rse_id, list_rse_attributes
+from security import safe_requests
 
 CHUNK_SIZE = 10485760
 
@@ -132,7 +132,7 @@ def http_links(base_url):
     '''
     Returns a list of the urls contained in `base_url`.
     '''
-    html = requests.get(base_url).text
+    html = safe_requests.get(base_url).text
     link_collector = _LinkCollector()
 
     link_collector.feed(html)

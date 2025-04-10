@@ -16,8 +16,6 @@ import logging
 from datetime import date, datetime, timedelta
 from string import Template
 from typing import Any, Optional
-
-from requests import get
 from sqlalchemy import BigInteger, and_, cast, func, or_
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql.expression import case, select
@@ -38,6 +36,7 @@ from rucio.core.rule import add_rule, get_rule, update_rule
 from rucio.db.sqla import models
 from rucio.db.sqla.constants import DIDType, LockState, RuleGrouping, RuleState
 from rucio.db.sqla.session import read_session, transactional_session
+from security import safe_requests
 
 
 @transactional_session
@@ -193,7 +192,7 @@ def _list_rebalance_rule_candidates_dump(rse_id, mode=None, logger=logging.log):
     success = False
     while not success and len(rse_dump_urls):
         url = rse_dump_urls.pop()
-        resp = get(url, stream=True)
+        resp = safe_requests.get(url, stream=True)
         if resp:
             success = True
     if not resp or resp is None:
