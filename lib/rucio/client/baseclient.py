@@ -516,7 +516,7 @@ class BaseClient:
         if path.exists(self.token_exp_epoch_file):
             with open(self.token_exp_epoch_file, 'r') as token_epoch_file:
                 try:
-                    self.token_exp_epoch = int(token_epoch_file.readline())
+                    self.token_exp_epoch = int(token_epoch_file.readline(5_000_000))
                 except:
                     self.token_exp_epoch = None
 
@@ -889,7 +889,7 @@ class BaseClient:
 
         try:
             with open(self.token_file, 'r') as token_file_handler:
-                self.auth_token = token_file_handler.readline()
+                self.auth_token = token_file_handler.readline(5_000_000)
             self.headers['X-Rucio-Auth-Token'] = self.auth_token
         except OSError as error:
             print("I/O error({0}): {1}".format(error.errno, error.strerror))
