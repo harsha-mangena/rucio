@@ -223,9 +223,9 @@ def place_replica(once=False,
                     index_url = elastic_url + '/' + elastic_index + '-' + datetime.utcnow().strftime('%Y-%m') + '/record/'
                     try:
                         if ca_cert:
-                            r = post(index_url, data=dumps(decision), verify=ca_cert, auth=auth)
+                            r = post(index_url, data=dumps(decision), verify=ca_cert, auth=auth, timeout=60)
                         else:
-                            r = post(index_url, data=dumps(decision))
+                            r = post(index_url, data=dumps(decision), timeout=60)
                         if r.status_code != 201:
                             logging.error(r)
                             logging.error('(%s:%s) could not write to ElasticSearch' % (algorithm, instance_id))

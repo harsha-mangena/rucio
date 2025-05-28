@@ -132,7 +132,7 @@ def http_links(base_url):
     '''
     Returns a list of the urls contained in `base_url`.
     '''
-    html = requests.get(base_url).text
+    html = requests.get(base_url, timeout=60).text
     link_collector = _LinkCollector()
 
     link_collector.feed(html)

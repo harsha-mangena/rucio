@@ -64,9 +64,9 @@ def get_popularity(did):
 
     logging.debug(query)
     if AUTH:
-        res = post(URL, data=dumps(query), auth=AUTH, verify=ELASTIC_CA_CERT)
+        res = post(URL, data=dumps(query), auth=AUTH, verify=ELASTIC_CA_CERT, timeout=60)
     else:
-        res = post(URL, data=dumps(query), verify=ELASTIC_CA_CERT)
+        res = post(URL, data=dumps(query), verify=ELASTIC_CA_CERT, timeout=60)
 
     if res.status_code != 200:
         return None

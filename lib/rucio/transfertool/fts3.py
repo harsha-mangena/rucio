@@ -1185,7 +1185,7 @@ class FTS3Transfertool(Transfertool):
         get_result = requests.get('%s/whoami' % self.external_host,
                                   verify=self.verify,
                                   cert=self.cert,
-                                  headers=self.headers)
+                                  headers=self.headers, timeout=60)
 
         if get_result and get_result.status_code == 200:
             WHOAMI_COUNTER.labels(state='success', host=self.__extract_host(self.external_host)).inc()
@@ -1206,7 +1206,7 @@ class FTS3Transfertool(Transfertool):
         get_result = requests.get('%s/' % self.external_host,
                                   verify=self.verify,
                                   cert=self.cert,
-                                  headers=self.headers)
+                                  headers=self.headers, timeout=60)
 
         if get_result and get_result.status_code == 200:
             VERSION_COUNTER.labels(state='success', host=self.__extract_host(self.external_host)).inc()

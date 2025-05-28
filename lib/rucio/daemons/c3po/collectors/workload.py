@@ -62,7 +62,7 @@ class WorkloadCollector:
 
         def collect_workload(self):
             start = time()
-            resp = get(self._request_url, headers=self._request_headers)
+            resp = get(self._request_url, headers=self._request_headers, timeout=60)
             logging.debug("PanDA response took %fs" % (time() - start))
 
             start = time()

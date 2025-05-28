@@ -58,7 +58,7 @@ class Default(protocol.RSEProtocol):
         dest = '/tmp/rucio-gsiftp-site-size_' + rse_name
         space_usage_url = ''
         # url of space usage json, would be nicer to have it in rse_settings
-        agis = requests.get('http://atlas-agis-api.cern.ch/request/ddmendpoint/query/list/?json').json()
+        agis = requests.get('http://atlas-agis-api.cern.ch/request/ddmendpoint/query/list/?json', timeout=60).json()
         agis_token = ''
         for res in agis:
             if rse_name == res['name']:
