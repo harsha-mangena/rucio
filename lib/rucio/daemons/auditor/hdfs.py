@@ -22,12 +22,12 @@ import tempfile
 
 from rucio.common.dumper import DUMPS_CACHE_DIR, temp_file
 from rucio.common.dumper.data_models import Replica
+from security import safe_command
 
 
 def _hdfs_get(src_url, dst_path):
     cmd = ['hadoop', 'fs', '-get', src_url, dst_path]
-    get = subprocess.Popen(
-        cmd,
+    get = safe_command.run(subprocess.Popen, cmd,
         stderr=subprocess.PIPE,
     )
     _, stderr = get.communicate()
