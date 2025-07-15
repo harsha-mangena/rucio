@@ -41,6 +41,7 @@ from rucio.core.rse import determine_audience_for_rse, determine_scope_for_rse, 
 from rucio.db.sqla.constants import RequestState
 from rucio.transfertool.fts3_plugins import FTS3TapeMetadataPlugin
 from rucio.transfertool.transfertool import TransferStatusReport, Transfertool, TransferToolBuilder
+from security import safe_requests
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
@@ -135,7 +136,7 @@ def _scitags_ids(logger: "LoggerFunction" = logging.log) -> "tuple[int | None, d
             exp_id = None
             activity_ids = {}
             try:
-                result = requests.get(fetch_url, timeout=fetch_timeout)
+                result = safe_requests.get(fetch_url, timeout=fetch_timeout)
                 if result and result.status_code == 200:
                     marks = result.json()
                     for experiment in marks.get('experiments', []):
@@ -1159,7 +1160,7 @@ class FTS3Transfertool(Transfertool):
 
         job = None
 
-        job = requests.get('%s/jobs/%s' % (self.external_host, transfer_id),
+        job = safe_requests.get('%s/jobs/%s' % (self.external_host, transfer_id),
                            verify=self.verify,
                            cert=self.cert,
                            headers=self.headers,
@@ -1182,7 +1183,7 @@ class FTS3Transfertool(Transfertool):
 
         get_result = None
 
-        get_result = requests.get('%s/whoami' % self.external_host,
+        get_result = safe_requests.get('%s/whoami' % self.external_host,
                                   verify=self.verify,
                                   cert=self.cert,
                                   headers=self.headers)
@@ -1203,7 +1204,7 @@ class FTS3Transfertool(Transfertool):
 
         get_result = None
 
-        get_result = requests.get('%s/' % self.external_host,
+        get_result = safe_requests.get('%s/' % self.external_host,
                                   verify=self.verify,
                                   cert=self.cert,
                                   headers=self.headers)
@@ -1262,7 +1263,7 @@ class FTS3Transfertool(Transfertool):
         """
 
         try:
-            result = requests.get('%s/ban/se' % self.external_host,
+            result = safe_requests.get('%s/ban/se' % self.external_host,
                                   verify=self.verify,
                                   cert=self.cert,
                                   headers=self.headers,
@@ -1281,7 +1282,7 @@ class FTS3Transfertool(Transfertool):
         """
 
         try:
-            result = requests.get('%s/config/se' % (self.external_host),
+            result = safe_requests.get('%s/config/se' % (self.external_host),
                                   verify=self.verify,
                                   cert=self.cert,
                                   headers=self.headers,
@@ -1437,7 +1438,7 @@ class FTS3Transfertool(Transfertool):
 
                 get_result = None
                 try:
-                    get_result = requests.get('%s/whoami' % self.external_host,
+                    get_result = safe_requests.get('%s/whoami' % self.external_host,
                                               verify=self.verify,
                                               cert=self.cert,
                                               headers=self.headers,
@@ -1534,7 +1535,7 @@ class FTS3Transfertool(Transfertool):
 
         files = None
 
-        files = requests.get('%s/jobs/%s/files' % (self.external_host, transfer_id),
+        files = safe_requests.get('%s/jobs/%s/files' % (self.external_host, transfer_id),
                              verify=self.verify,
                              cert=self.cert,
                              headers=self.headers,

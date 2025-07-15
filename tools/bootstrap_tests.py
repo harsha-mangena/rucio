@@ -20,6 +20,7 @@ import time
 from json import dumps
 
 import requests
+from security import safe_requests
 
 base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(base_path)
@@ -76,7 +77,7 @@ def is_influxdb_available():
 
 
 def create_influxdb_database():
-    response = requests.get('http://localhost:8086/api/v2/buckets?org=rucio', headers={'Authorization': 'Token mytoken'})
+    response = safe_requests.get('http://localhost:8086/api/v2/buckets?org=rucio', headers={'Authorization': 'Token mytoken'})
     if response.status_code == 200:
         json = response.json()
         buckets = json.get('buckets', [])
